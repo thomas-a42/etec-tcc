@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Início{% endblock %} · {{ SITE_NOME }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a class="navbar__brand" href="{{ url_for('public.home') }}">🐾 {{ SITE_NOME }}</a>
+      <nav class="navbar__links">
+        <a href="{{ url_for('public.home') }}">Início</a>
+        <a href="{{ url_for('public.busca') }}">Buscar</a>
+        {% if actor and actor.role == 'user' %}
+          <a href="{{ url_for('chat.pagina') }}">Mensagens</a>
+        {% elif actor and actor.role == 'ong' %}
+          <a href="{{ url_for('ong.dashboard') }}">Painel da ONG</a>
+        {% elif actor and actor.role == 'admin' %}
+          <a href="{{ url_for('admin.painel') }}">Painel admin</a>
+        {% endif %}
+      </nav>
+      <div class="navbar__conta">
+        {% if actor %}
+          <span class="muted">{{ actor.nome }}</span>
+          <a class="btn btn--secundario btn--pequeno" href="{{ url_for('auth.logout') }}">Sair</a>
+        {% else %}
+          <a class="btn btn--secundario btn--pequeno" href="{{ url_for('auth.login_user') }}">Entrar</a>
+          <a class="btn btn--pequeno" href="{{ url_for('auth.login_staff') }}">Sou ONG</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="container {% block main_class %}{% endblock %}">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensagens %}
+        <div class="flash flash--{{ categoria }}">{{ texto }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

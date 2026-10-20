@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo %}Painel da ONG{% endblock %}
+
+{% block conteudo %}
+<div class="pagina-topo">
+  <h1>Painel da ONG</h1>
+  {% if actor.verificada %}
+    <a class="btn" href="{{ url_for('ong.novo') }}">+ Novo anúncio</a>
+  {% endif %}
+</div>
+
+{% if not actor.verificada %}
+  <div class="flash flash--aviso">Sua ONG está aguardando verificação. Você poderá publicar anúncios assim que um administrador aprovar o cadastro.</div>
+{% endif %}
+
+<nav class="tabs">
+  <a class="tabs__item {{ 'is-ativa' if aba == 'anuncios' }}" href="{{ url_for('ong.dashboard', aba='anuncios') }}">Meus anúncios</a>
+  <a class="tabs__item {{ 'is-ativa' if aba == 'mensagens' }}" href="{{ url_for('ong.dashboard', aba='mensagens') }}">Mensagens</a>
+</nav>
+
+{% if aba == 'mensagens' %}
+  {% with role='ong' %}{% include "partials/chat_app.html" %}{% endwith %}
+{% else %}
+  {% if anuncios %}
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead>
+        <tr><th></th><th>Animal</th><th>Espécie</th><th>Conversas</th><th>Publicado em</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for a in anuncios %}
+        <tr>
+          <td>{% if a.imagem %}<img class="tabela__thumb" src="{{ a.imagem }}" alt="">{% else %}<span class="tabela__thumb tabela__thumb--vazia">🐾</span>{% endif %}</td>
+          <td><a href="{{ url_for('public.anuncio', anuncio_id=a.id) }}">{{ a.nome_animal }}</a></td>
+          <td>{{ a.especie|capitalize }}</td>
+          <td>{{ a.conversas }}</td>
+          <td>{{ a.data_publicacao|datahora }}</td>
+          <td>
+            <form method="post" action="{{ url_for('ong.status', anuncio_id=a.id) }}">
+              <select name="valor" data-autosubmit>
+                {% for s in status_opcoes %}
+                  <option value="{{ s }}" {{ 'selected' if s == a.status }}>{{ s|rotulo }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </td>
+          <td><a class="btn btn--secundario btn--pequeno" href="{{ url_for('ong.editar', anuncio_id=a.id) }}">Editar</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="muted">Você ainda não publicou nenhum anúncio.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% if aba == 'mensagens' %}<script src="{{ url_for('static', filename='js/chat.js') }}"></script>{% endif %}
+{% endblock %}

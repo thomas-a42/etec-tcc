@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Mensagens{% endblock %}
+
+{% block conteudo %}
+<h1>Minhas conversas</h1>
+{% with role='user' %}{% include "partials/chat_app.html" %}{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

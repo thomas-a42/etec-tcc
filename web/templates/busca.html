@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block titulo %}Buscar animais{% endblock %}
+
+{% block conteudo %}
+{% set v = request.args %}
+<h1>Buscar animais</h1>
+
+<form id="filtros" class="filtros" method="get">
+  <label class="campo">Nome
+    <input type="search" name="q" value="{{ v.get('q', '') }}" placeholder="Ex.: Thor">
+  </label>
+
+  <label class="campo">Espécie
+    <select name="especie">
+      <option value="">Todas</option>
+      {% for e in especies %}
+        <option value="{{ e }}" {{ 'selected' if v.get('especie', '')|lower == e|lower }}>{{ e|capitalize }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label class="campo">Raça
+    <input name="raca" list="lista-racas" value="{{ v.get('raca', '') }}" placeholder="Qualquer">
+    <datalist id="lista-racas">
+      {% for r in racas %}<option value="{{ r }}">{% endfor %}
+    </datalist>
+  </label>
+
+  <label class="campo">Sexo
+    <select name="sexo">
+      <option value="">Todos</option>
+      <option value="macho" {{ 'selected' if v.get('sexo') == 'macho' }}>Macho</option>
+      <option value="femea" {{ 'selected' if v.get('sexo') == 'femea' }}>Fêmea</option>
+    </select>
+  </label>
+
+  <label class="campo">Porte
+    <select name="porte">
+      <option value="">Todos</option>
+      <option value="pequeno" {{ 'selected' if v.get('porte') == 'pequeno' }}>Pequeno</option>
+      <option value="medio" {{ 'selected' if v.get('porte') == 'medio' }}>Médio</option>
+      <option value="grande" {{ 'selected' if v.get('porte') == 'grande' }}>Grande</option>
+    </select>
+  </label>
+
+  <div class="campo">Idade (anos)
+    <div class="campo__par">
+      <input type="number" min="0" name="idade_min" value="{{ v.get('idade_min', '') }}" placeholder="de" aria-label="Idade mínima">
+      <input type="number" min="0" name="idade_max" value="{{ v.get('idade_max', '') }}" placeholder="até" aria-label="Idade máxima">
+    </div>
+  </div>
+
+  <label class="campo">Cidade
+    <input name="cidade" value="{{ v.get('cidade', '') }}">
+  </label>
+
+  <label class="campo campo--curto">UF
+    <input name="estado" maxlength="2" value="{{ v.get('estado', '') }}">
+  </label>
+
+  <label class="campo">Situação
+    <select name="status">
+      <option value="disponivel">Disponível</option>
+      <option value="reservado" {{ 'selected' if v.get('status') == 'reservado' }}>Reservado</option>
+    </select>
+  </label>
+
+  <div class="campo campo--checks">
+    <label class="check"><input type="checkbox" name="vacinado" value="1" {{ 'checked' if v.get('vacinado') }}> Vacinado</label>
+    <label class="check"><input type="checkbox" name="castrado" value="1" {{ 'checked' if v.get('castrado') }}> Castrado</label>
+  </div>
+
+  <div class="filtros__acoes">
+    <button class="btn" type="submit">Filtrar</button>
+    <a class="btn btn--secundario" href="{{ url_for('public.busca') }}">Limpar</a>
+  </div>
+</form>
+
+<div id="feed" class="grid-cards" data-endpoint="{{ url_for('public.api_anuncios') }}"></div>
+<p id="feed-status" class="feed-status muted" aria-live="polite"></p>
+<div id="feed-sentinel"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/feed.js') }}"></script>
+{% endblock %}

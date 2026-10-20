@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block titulo %}Painel administrativo{% endblock %}
+
+{% block conteudo %}
+<h1>Painel administrativo</h1>
+
+<nav class="tabs">
+  <a class="tabs__item {{ 'is-ativa' if aba == 'usuarios' }}" href="{{ url_for('admin.painel', aba='usuarios') }}">Usuários</a>
+  <a class="tabs__item {{ 'is-ativa' if aba == 'ongs' }}" href="{{ url_for('admin.painel', aba='ongs') }}">
+    ONGs {% if pendentes %}<span class="contador">{{ pendentes }}</span>{% endif %}
+  </a>
+  <a class="tabs__item {{ 'is-ativa' if aba == 'anuncios' }}" href="{{ url_for('admin.painel', aba='anuncios') }}">Anúncios</a>
+  <a class="tabs__item {{ 'is-ativa' if aba == 'chats' }}" href="{{ url_for('admin.painel', aba='chats') }}">Chats</a>
+</nav>
+
+<form class="busca-inline" method="get">
+  <input type="hidden" name="aba" value="{{ aba }}">
+  <input type="search" name="q" value="{{ q }}" placeholder="Buscar nesta aba…">
+  <button class="btn btn--secundario" type="submit">Buscar</button>
+</form>
+
+{% if not rows %}
+  <p class="muted">Nenhum registro encontrado.</p>
+{% else %}
+<div class="tabela-wrap">
+<table class="tabela">
+
+  {% if aba == 'usuarios' %}
+  <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Cadastro</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.nome }}</td><td>{{ r.email }}</td><td>{{ r.telefone or '—' }}</td>
+      <td>{{ r.data_cadastro|datahora }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin.usuario_status', item_id=r.id) }}">
+          <input type="hidden" name="voltar" value="{{ request.full_path }}">
+          <select name="valor" data-autosubmit>
+            {% for s in ('ativo', 'suspenso') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+          </select>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+
+  {% elif aba == 'ongs' %}
+  <thead><tr><th>Nome</th><th>E-mail</th><th>CNPJ</th><th>Local</th><th>Cadastro</th><th>Verificação</th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.nome }}</td><td>{{ r.email }}</td><td>{{ r.cnpj or '—' }}</td>
+      <td>{{ r.cidade }}/{{ r.estado }}</td><td>{{ r.data_cadastro|datahora }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin.ong_verificacao', item_id=r.id) }}">
+          <input type="hidden" name="voltar" value="{{ request.full_path }}">
+          <select name="valor" data-autosubmit>
+            {% for s in ('pendente', 'verificada', 'rejeitada') %}<option value="{{ s }}" {{ 'selected' if s == r.status_verificacao }}>{{ s|rotulo }}</option>{% endfor %}
+          </select>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+
+  {% elif aba == 'anuncios' %}
+  <thead><tr><th>Animal</th><th>Espécie</th><th>ONG</th><th>Publicado em</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td><a href="{{ url_for('public.anuncio', anuncio_id=r.id) }}">{{ r.nome_animal }}</a></td>
+      <td>{{ r.especie|capitalize }}</td><td>{{ r.ong_nome }}</td>
+      <td>{{ r.data_publicacao|datahora }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin.anuncio_status', item_id=r.id) }}">
+          <input type="hidden" name="voltar" value="{{ request.full_path }}">
+          <select name="valor" data-autosubmit>
+            {% for s in ('disponivel', 'reservado', 'adotado', 'inativo') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+          </select>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+
+  {% else %}
+  <thead><tr><th>Animal</th><th>Usuário</th><th>ONG</th><th>Mensagens</th><th>Última atividade</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.nome_animal }}</td><td>{{ r.user_nome }}</td><td>{{ r.ong_nome }}</td>
+      <td>{{ r.total }}</td>
+      <td>{{ (r.data_ultima_mensagem or r.data_criacao)|datahora }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin.chat_status', item_id=r.id) }}">
+          <input type="hidden" name="voltar" value="{{ request.full_path }}">
+          <select name="valor" data-autosubmit>
+            {% for s in ('aberto', 'encerrado', 'bloqueado') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+          </select>
+        </form>
+      </td>
+      <td><a class="btn btn--secundario btn--pequeno" href="{{ url_for('admin.chat_ver', chat_id=r.id) }}">Ver conversa</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  {% endif %}
+
+</table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

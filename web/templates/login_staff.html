@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Acesso ONGs e administradores{% endblock %}
+
+{% block conteudo %}
+<section class="auth-card">
+  <h1>Acesso para ONGs e administradores</h1>
+  <p class="muted">Use o e-mail cadastrado da ONG ou da conta de administrador.</p>
+
+  <form method="post" class="form">
+    <label class="campo">E-mail
+      <input type="email" name="email" required autofocus>
+    </label>
+    <label class="campo">Senha
+      <input type="password" name="senha" required>
+    </label>
+    <button class="btn btn--bloco" type="submit">Entrar</button>
+  </form>
+
+  <p class="auth-card__links">
+    Quer cadastrar sua ONG? <a href="{{ url_for('auth.register_ong') }}">Cadastrar ONG</a><br>
+    Quer adotar? <a href="{{ url_for('auth.login_user') }}">Entrar como usuário</a>
+  </p>
+</section>
+{% endblock %}

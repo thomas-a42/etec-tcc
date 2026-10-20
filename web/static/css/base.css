@@ -1,0 +1,87 @@
+/* ==========================================================
+   BASE — reset, tipografia, layout, formulários e botões.
+   Nada aqui é específico de uma página.
+   ========================================================== */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+img { max-width: 100%; display: block; }
+
+/* ---------- Tipografia ---------- */
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  font-size: var(--tam-base);
+  line-height: 1.5;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+h1, h2, h3 { line-height: 1.2; margin: 0 0 var(--esp-3); }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.35rem; }
+p { margin: 0 0 var(--esp-3); }
+a { color: var(--cor-primaria-escura); }
+.muted { color: var(--cor-texto-suave); }
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--largura-max);
+  margin: 0 auto;
+  padding: var(--esp-4) var(--esp-3);
+}
+.pagina-topo {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--esp-3); flex-wrap: wrap; margin-bottom: var(--esp-3);
+}
+.pagina-topo h1 { margin: 0; }
+.secao { margin-top: var(--esp-5); }
+
+/* ---------- Formulários ---------- */
+.form { display: flex; flex-direction: column; gap: var(--esp-3); }
+.form--larga { max-width: 800px; }
+.form__linha { display: flex; gap: var(--esp-3); flex-wrap: wrap; }
+.form__linha > .campo { flex: 1 1 180px; }
+
+.campo { display: flex; flex-direction: column; gap: var(--esp-1); font-size: var(--tam-pequeno); font-weight: 600; }
+.campo--curto { max-width: 90px; }
+.campo__par { display: flex; gap: var(--esp-2); }
+.campo--checks { flex-direction: row; gap: var(--esp-3); align-items: center; }
+.check { display: flex; align-items: center; gap: var(--esp-2); font-weight: 400; font-size: 1rem; }
+
+input, select, textarea {
+  font: inherit; font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  width: 100%;
+}
+input[type="checkbox"] { width: auto; }
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 1px;
+}
+textarea { resize: vertical; }
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--cor-primaria);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-primaria);
+  color: #fff;
+  font: inherit; font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover { background: var(--cor-primaria-escura); border-color: var(--cor-primaria-escura); }
+.btn--secundario { background: transparent; color: var(--cor-primaria-escura); }
+.btn--secundario:hover { background: #fdf0e6; color: var(--cor-primaria-escura); }
+.btn--perigo { background: var(--cor-erro); border-color: var(--cor-erro); }
+.btn--perigo:hover { background: #a32e22; border-color: #a32e22; }
+.btn--pequeno { padding: 5px 12px; font-size: var(--tam-pequeno); }
+.btn--bloco { width: 100%; text-align: center; }

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Moderar conversa{% endblock %}
+
+{% block conteudo %}
+<div class="pagina-topo">
+  <h1>Conversa sobre {{ c.nome_animal }}</h1>
+  <a class="btn btn--secundario" href="{{ url_for('admin.painel', aba='chats') }}">Voltar</a>
+</div>
+
+<p class="muted">
+  Usuário: <strong>{{ c.user_nome }}</strong> ({{ c.user_email }}) ·
+  ONG: <strong>{{ c.ong_nome }}</strong> ·
+  <a href="{{ url_for('public.anuncio', anuncio_id=c.anuncio_id) }}">ver anúncio</a>
+</p>
+
+<form class="busca-inline" method="post" action="{{ url_for('admin.chat_status', item_id=c.id) }}">
+  <input type="hidden" name="voltar" value="{{ request.path }}">
+  <label>Status da conversa:
+    <select name="valor" data-autosubmit>
+      {% for s in ('aberto', 'encerrado', 'bloqueado') %}<option value="{{ s }}" {{ 'selected' if s == c.status }}>{{ s|rotulo }}</option>{% endfor %}
+    </select>
+  </label>
+</form>
+
+<div class="chat-messages chat-messages--solto">
+  {% for m in msgs %}
+    <div class="msg {{ 'msg--outro' if m.de_user else 'msg--minha' }}">
+      <span class="msg__autor">{{ c.user_nome if m.de_user else c.ong_nome }}</span>
+      <div class="msg__texto">{{ m.conteudo }}</div>
+      <span class="msg__hora">{{ m.data_envio|datahora }}</span>
+    </div>
+  {% else %}
+    <p class="muted">Nenhuma mensagem trocada ainda.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

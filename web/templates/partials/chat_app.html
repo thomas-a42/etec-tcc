@@ -1,0 +1,18 @@
+{# Componente de chat reutilizado pela página do usuário e pelo painel da ONG.
+   Espera as variáveis: role ('user' | 'ong') e selected (id da conversa a abrir). #}
+<div class="chat-app" id="chat-app" data-role="{{ role }}" data-selected="{{ selected or '' }}">
+  <aside class="chat-list" id="chat-list" aria-label="Conversas">
+    <p class="muted chat-list__vazio">Carregando…</p>
+  </aside>
+
+  <section class="chat-panel">
+    <header class="chat-panel__header" id="chat-header">Selecione uma conversa</header>
+    <div class="chat-messages" id="chat-messages"></div>
+    <p class="chat-aviso" id="chat-aviso" hidden></p>
+    <form class="chat-form" id="chat-form" hidden>
+      <textarea id="chat-input" rows="2" maxlength="2000" placeholder="Escreva uma mensagem…" required></textarea>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </section>
+</div>
+{# O script static/js/chat.js é carregado pela página que inclui este componente. #}

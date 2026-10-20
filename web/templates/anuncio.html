@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block titulo %}{{ a.nome_animal }}{% endblock %}
+
+{% block conteudo %}
+<article class="detalhe">
+  <div class="galeria" id="galeria">
+    {% if imagens %}
+      <img class="galeria__principal" id="galeria-principal" src="{{ imagens[0].url }}" alt="Foto de {{ a.nome_animal }}">
+      {% if imagens|length > 1 %}
+      <div class="galeria__miniaturas">
+        {% for img in imagens %}
+          <button type="button" class="galeria__mini" data-src="{{ img.url }}" aria-label="Ver foto {{ loop.index }}">
+            <img src="{{ img.url }}" alt="">
+          </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="galeria__vazia">🐾</div>
+    {% endif %}
+  </div>
+
+  <div class="detalhe__info">
+    <h1>{{ a.nome_animal }} <span class="badge badge--{{ a.status }}">{{ a.status|rotulo }}</span></h1>
+    <ul class="tags">
+      <li class="tag">{{ a.especie|capitalize }}</li>
+      {% if a.raca %}<li class="tag">{{ a.raca }}</li>{% endif %}
+      {% if a.sexo %}<li class="tag">{{ a.sexo|rotulo }}</li>{% endif %}
+      {% if a.porte %}<li class="tag">Porte {{ a.porte|rotulo|lower }}</li>{% endif %}
+      <li class="tag">{{ a.idade|idade }}</li>
+      {% if a.vacinado %}<li class="tag tag--ok">Vacinado</li>{% endif %}
+      {% if a.castrado %}<li class="tag tag--ok">Castrado</li>{% endif %}
+    </ul>
+
+    <p class="detalhe__descricao">{{ a.descricao }}</p>
+
+    <div class="caixa">
+      <strong>{{ a.ong_nome }}</strong>
+      <span class="muted">{{ a.cidade }}/{{ a.estado }}</span>
+      {% if a.ong_descricao %}<p class="muted">{{ a.ong_descricao }}</p>{% endif %}
+    </div>
+
+    <div class="detalhe__acoes">
+      {% if dono %}
+        <a class="btn" href="{{ url_for('ong.editar', anuncio_id=a.id) }}">Editar anúncio</a>
+      {% elif a.status in ('disponivel', 'reservado') %}
+        {% if actor and actor.role == 'user' %}
+          {% if chat_existente %}
+            <a class="btn" href="{{ url_for('chat.pagina', c=chat_existente.id) }}">Abrir conversa</a>
+          {% else %}
+            <form method="post" action="{{ url_for('chat.conversar', anuncio_id=a.id) }}">
+              <button class="btn" type="submit">Tenho interesse em adotar</button>
+            </form>
+          {% endif %}
+        {% elif not actor %}
+          <a class="btn" href="{{ url_for('auth.login_user', next=request.path) }}">Entre para conversar com a ONG</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/anuncio.js') }}"></script>
+{% endblock %}

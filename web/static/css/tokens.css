@@ -1,0 +1,38 @@
+/* ==========================================================
+   TOKENS — cores, fontes, espaçamentos, raios.
+   Para mudar a identidade visual, comece por aqui.
+   ========================================================== */
+:root {
+  /* Cores */
+  --cor-primaria: #e07a2f;
+  --cor-primaria-escura: #c4651f;
+  --cor-fundo: #faf7f2;
+  --cor-superficie: #ffffff;
+  --cor-texto: #2b2b2b;
+  --cor-texto-suave: #6b6b6b;
+  --cor-borda: #e6e0d6;
+  --cor-sucesso: #2e8b57;
+  --cor-aviso: #b7791f;
+  --cor-erro: #c0392b;
+
+  /* Tipografia */
+  --fonte: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tam-base: 16px;
+  --tam-pequeno: 0.875rem;
+
+  /* Espaçamento */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 16px;
+  --esp-4: 24px;
+  --esp-5: 40px;
+
+  /* Forma */
+  --raio: 12px;
+  --raio-pequeno: 8px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  /* Layout */
+  --largura-max: 1100px;
+  --altura-navbar: 60px;
+}

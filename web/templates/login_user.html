@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar{% endblock %}
+
+{% block conteudo %}
+<section class="auth-card">
+  <h1>Entrar</h1>
+  <p class="muted">Acesse sua conta para conversar com as ONGs.</p>
+
+  <form method="post" class="form">
+    <label class="campo">E-mail
+      <input type="email" name="email" required autofocus>
+    </label>
+    <label class="campo">Senha
+      <input type="password" name="senha" required>
+    </label>
+    <button class="btn btn--bloco" type="submit">Entrar</button>
+  </form>
+
+  <p class="auth-card__links">
+    Ainda não tem conta? <a href="{{ url_for('auth.register_user') }}">Cadastre-se</a><br>
+    É uma ONG ou administrador? <a href="{{ url_for('auth.login_staff') }}">Acesse por aqui</a>
+  </p>
+</section>
+{% endblock %}

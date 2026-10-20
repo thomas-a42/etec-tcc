@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Novo anúncio' if modo == 'novo' else 'Editar anúncio' }}{% endblock %}
+
+{% block conteudo %}
+<div class="pagina-topo">
+  <h1>{{ 'Novo anúncio' if modo == 'novo' else 'Editar anúncio' }}</h1>
+  <a class="btn btn--secundario" href="{{ url_for('ong.dashboard') }}">Voltar</a>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="form form--larga">
+  <div class="form__linha">
+    <label class="campo">Nome do animal
+      <input name="nome_animal" maxlength="100" required value="{{ a.nome_animal or '' }}">
+    </label>
+    <label class="campo">Espécie
+      <input name="especie" maxlength="30" required list="lista-especies" value="{{ a.especie or '' }}" placeholder="cachorro, gato…">
+      <datalist id="lista-especies">
+        <option value="cachorro"><option value="gato"><option value="coelho"><option value="ave">
+      </datalist>
+    </label>
+    <label class="campo">Raça
+      <input name="raca" maxlength="100" value="{{ a.raca or '' }}">
+    </label>
+  </div>
+
+  <div class="form__linha">
+    <label class="campo">Sexo
+      <select name="sexo">
+        <option value="">—</option>
+        {% for s in ('macho', 'femea', 'desconhecido') %}
+          <option value="{{ s }}" {{ 'selected' if a.sexo == s }}>{{ s|rotulo }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="campo">Porte
+      <select name="porte">
+        <option value="">—</option>
+        {% for p in ('pequeno', 'medio', 'grande') %}
+          <option value="{{ p }}" {{ 'selected' if a.porte == p }}>{{ p|rotulo }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="campo">Idade (anos)
+      <input type="number" min="0" name="idade" value="{{ '' if a.idade is none else a.idade }}">
+    </label>
+  </div>
+
+  <div class="campo campo--checks">
+    <label class="check"><input type="checkbox" name="vacinado" value="1" {{ 'checked' if a.vacinado }}> Vacinado</label>
+    <label class="check"><input type="checkbox" name="castrado" value="1" {{ 'checked' if a.castrado }}> Castrado</label>
+  </div>
+
+  <label class="campo">Descrição
+    <textarea name="descricao" rows="5" required>{{ a.descricao or '' }}</textarea>
+  </label>
+
+  <label class="campo">Adicionar fotos (até 8 no total; a primeira vira a principal)
+    <input type="file" name="imagens" accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+  </label>
+
+  <button class="btn" type="submit">{{ 'Publicar anúncio' if modo == 'novo' else 'Salvar alterações' }}</button>
+</form>
+
+{% if modo == 'editar' %}
+<section class="secao">
+  <h2>Fotos do anúncio</h2>
+  {% if imagens %}
+  <div class="imagens-grid">
+    {% for img in imagens %}
+    <figure class="imagens-grid__item">
+      <img src="{{ img.url }}" alt="">
+      <figcaption>
+        {% if img.principal %}
+          <span class="badge badge--disponivel">Principal</span>
+        {% else %}
+          <form method="post" action="{{ url_for('ong.imagem_principal', imagem_id=img.id) }}">
+            <button class="btn btn--secundario btn--pequeno" type="submit">Tornar principal</button>
+          </form>
+        {% endif %}
+        <form method="post" action="{{ url_for('ong.remover_imagem', imagem_id=img.id) }}">
+          <button class="btn btn--perigo btn--pequeno" type="submit" data-confirmar="Remover esta foto?">Remover</button>
+        </form>
+      </figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="muted">Nenhuma foto enviada ainda.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

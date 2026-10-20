@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Cadastrar ONG' if tipo == 'ong' else 'Criar conta' }}{% endblock %}
+
+{% block conteudo %}
+{% set d = dados or {} %}
+<section class="auth-card auth-card--larga">
+  {% if tipo == 'ong' %}
+    <h1>Cadastrar ONG</h1>
+    <p class="muted">Após o cadastro, um administrador precisa verificar sua ONG antes de você publicar anúncios.</p>
+    <form method="post" class="form">
+      <label class="campo">Nome da ONG
+        <input name="nome" maxlength="150" required value="{{ d.nome or '' }}">
+      </label>
+      <label class="campo">E-mail
+        <input type="email" name="email" maxlength="255" required value="{{ d.email or '' }}">
+      </label>
+      <label class="campo">Senha (mín. 6 caracteres)
+        <input type="password" name="senha" minlength="6" required>
+      </label>
+      <div class="form__linha">
+        <label class="campo">CNPJ (opcional)
+          <input name="cnpj" maxlength="18" value="{{ d.cnpj or '' }}">
+        </label>
+        <label class="campo">Telefone
+          <input name="telefone" maxlength="20" value="{{ d.telefone or '' }}">
+        </label>
+      </div>
+      <div class="form__linha">
+        <label class="campo">Cidade
+          <input name="cidade" maxlength="100" required value="{{ d.cidade or '' }}">
+        </label>
+        <label class="campo campo--curto">UF
+          <input name="estado" maxlength="2" minlength="2" required placeholder="SP" value="{{ d.estado or '' }}">
+        </label>
+      </div>
+      <label class="campo">Endereço
+        <input name="endereco" value="{{ d.endereco or '' }}">
+      </label>
+      <label class="campo">Sobre a ONG
+        <textarea name="descricao" rows="3">{{ d.descricao or '' }}</textarea>
+      </label>
+      <button class="btn btn--bloco" type="submit">Cadastrar ONG</button>
+    </form>
+    <p class="auth-card__links">Já tem cadastro? <a href="{{ url_for('auth.login_staff') }}">Entrar</a></p>
+  {% else %}
+    <h1>Criar conta</h1>
+    <form method="post" class="form">
+      <label class="campo">Nome
+        <input name="nome" maxlength="100" required autofocus>
+      </label>
+      <label class="campo">E-mail
+        <input type="email" name="email" maxlength="255" required>
+      </label>
+      <label class="campo">Telefone (opcional)
+        <input name="telefone" maxlength="20">
+      </label>
+      <label class="campo">Senha (mín. 6 caracteres)
+        <input type="password" name="senha" minlength="6" required>
+      </label>
+      <button class="btn btn--bloco" type="submit">Criar conta</button>
+    </form>
+    <p class="auth-card__links">Já tem conta? <a href="{{ url_for('auth.login_user') }}">Entrar</a></p>
+  {% endif %}
+</section>
+{% endblock %}

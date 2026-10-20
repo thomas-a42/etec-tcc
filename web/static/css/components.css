@@ -1,0 +1,128 @@
+/* ==========================================================
+   COMPONENTES — um bloco por componente, na ordem em que
+   aparecem nas páginas. Nomes seguem o padrão BEM:
+   .bloco, .bloco__elemento, .bloco--variacao
+   ========================================================== */
+
+/* ---------- Navbar ---------- */
+.navbar { background: var(--cor-superficie); border-bottom: 1px solid var(--cor-borda); position: sticky; top: 0; z-index: 10; }
+.navbar__inner { display: flex; align-items: center; gap: var(--esp-4); min-height: var(--altura-navbar); padding-top: 0; padding-bottom: 0; flex-wrap: wrap; }
+.navbar__brand { font-weight: 800; font-size: 1.2rem; text-decoration: none; color: var(--cor-primaria-escura); }
+.navbar__links { display: flex; gap: var(--esp-3); flex: 1; }
+.navbar__links a { text-decoration: none; color: var(--cor-texto); font-weight: 500; }
+.navbar__links a:hover { color: var(--cor-primaria-escura); }
+.navbar__conta { display: flex; align-items: center; gap: var(--esp-2); }
+
+/* ---------- Mensagens flash ---------- */
+.flash { padding: var(--esp-2) var(--esp-3); border-radius: var(--raio-pequeno); margin-bottom: var(--esp-3); border: 1px solid; }
+.flash--ok { background: #e8f5ee; border-color: var(--cor-sucesso); color: #1e5c3a; }
+.flash--erro { background: #fbeaea; border-color: var(--cor-erro); color: #8a2a20; }
+.flash--aviso { background: #fdf4e0; border-color: var(--cor-aviso); color: #7a5214; }
+
+/* ---------- Card de autenticação (login / cadastro / erro) ---------- */
+.auth-card { max-width: 400px; margin: var(--esp-4) auto; background: var(--cor-superficie); padding: var(--esp-4); border-radius: var(--raio); box-shadow: var(--sombra); }
+.auth-card--larga { max-width: 560px; }
+.auth-card__links { margin: var(--esp-3) 0 0; font-size: var(--tam-pequeno); color: var(--cor-texto-suave); }
+
+/* ---------- Hero (home) ---------- */
+.hero { text-align: center; padding: var(--esp-4) 0 var(--esp-5); }
+.hero p { color: var(--cor-texto-suave); }
+
+/* ---------- Grade e cards de animais ---------- */
+.grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--esp-4); }
+.card { display: flex; flex-direction: column; background: var(--cor-superficie); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; text-decoration: none; color: inherit; transition: transform 0.15s; }
+.card:hover { transform: translateY(-3px); }
+.card__foto { aspect-ratio: 4 / 3; width: 100%; object-fit: cover; background: #f1ebe1; }
+.card__sem-foto { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; font-size: 3rem; background: #f1ebe1; }
+.card__corpo { padding: var(--esp-3); display: flex; flex-direction: column; gap: var(--esp-1); }
+.card__titulo { margin: 0; font-size: 1.15rem; }
+.card__meta { font-size: var(--tam-pequeno); color: var(--cor-texto-suave); }
+
+.feed-status { text-align: center; margin: var(--esp-4) 0; }
+
+/* ---------- Badges e tags ---------- */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; vertical-align: middle; background: #eee; color: var(--cor-texto-suave); }
+.badge--disponivel { background: #e8f5ee; color: #1e5c3a; }
+.badge--reservado { background: #fdf4e0; color: #7a5214; }
+.badge--adotado { background: #e6eefb; color: #254a8a; }
+.badge--inativo { background: #eee; color: #777; }
+.tags { display: flex; flex-wrap: wrap; gap: var(--esp-2); list-style: none; padding: 0; margin: 0 0 var(--esp-3); }
+.tag { padding: 3px 12px; border-radius: 999px; background: #f1ebe1; font-size: var(--tam-pequeno); }
+.tag--ok { background: #e8f5ee; color: #1e5c3a; }
+
+/* ---------- Filtros (busca) ---------- */
+.filtros { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--esp-3); align-items: end; background: var(--cor-superficie); padding: var(--esp-3); border-radius: var(--raio); box-shadow: var(--sombra); margin-bottom: var(--esp-4); }
+.filtros__acoes { display: flex; gap: var(--esp-2); }
+
+/* ---------- Detalhe do anúncio ---------- */
+.detalhe { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--esp-4); }
+.galeria__principal { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--raio); }
+.galeria__vazia { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; font-size: 5rem; background: #f1ebe1; border-radius: var(--raio); }
+.galeria__miniaturas { display: flex; gap: var(--esp-2); margin-top: var(--esp-2); flex-wrap: wrap; }
+.galeria__mini { padding: 0; border: 2px solid transparent; border-radius: var(--raio-pequeno); background: none; cursor: pointer; overflow: hidden; }
+.galeria__mini:hover, .galeria__mini.is-ativa { border-color: var(--cor-primaria); }
+.galeria__mini img { width: 72px; height: 54px; object-fit: cover; }
+.detalhe__descricao { white-space: pre-line; }
+.detalhe__acoes { margin-top: var(--esp-3); }
+.caixa { background: var(--cor-superficie); border: 1px solid var(--cor-borda); border-radius: var(--raio); padding: var(--esp-3); display: flex; flex-direction: column; gap: var(--esp-1); }
+.caixa p { margin: 0; }
+
+/* ---------- Abas ---------- */
+.tabs { display: flex; gap: var(--esp-2); border-bottom: 2px solid var(--cor-borda); margin-bottom: var(--esp-3); }
+.tabs__item { padding: var(--esp-2) var(--esp-3); text-decoration: none; color: var(--cor-texto-suave); font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tabs__item:hover { color: var(--cor-texto); }
+.tabs__item.is-ativa { color: var(--cor-primaria-escura); border-bottom-color: var(--cor-primaria); }
+.contador { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--cor-erro); color: #fff; font-size: 0.75rem; text-align: center; }
+
+/* ---------- Tabelas (dashboard / admin) ---------- */
+.tabela-wrap { overflow-x: auto; background: var(--cor-superficie); border-radius: var(--raio); box-shadow: var(--sombra); }
+.tabela { width: 100%; border-collapse: collapse; font-size: var(--tam-pequeno); }
+.tabela th, .tabela td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--cor-borda); vertical-align: middle; }
+.tabela th { background: #f6f1e8; font-weight: 700; white-space: nowrap; }
+.tabela select { padding: 5px 8px; width: auto; }
+.tabela__thumb { width: 48px; height: 48px; object-fit: cover; border-radius: var(--raio-pequeno); }
+.tabela__thumb--vazia { display: flex; align-items: center; justify-content: center; background: #f1ebe1; }
+.busca-inline { display: flex; gap: var(--esp-2); margin-bottom: var(--esp-3); align-items: center; flex-wrap: wrap; }
+.busca-inline input[type="search"] { max-width: 320px; }
+.busca-inline select { width: auto; }
+
+/* ---------- Grade de imagens (editar anúncio) ---------- */
+.imagens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--esp-3); }
+.imagens-grid__item { margin: 0; background: var(--cor-superficie); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; }
+.imagens-grid__item img { aspect-ratio: 4 / 3; width: 100%; object-fit: cover; }
+.imagens-grid__item figcaption { padding: var(--esp-2); display: flex; flex-wrap: wrap; gap: var(--esp-2); align-items: center; }
+
+/* ---------- Chat ---------- */
+.chat-app { display: grid; grid-template-columns: 300px minmax(0, 1fr); height: 70vh; min-height: 420px; background: var(--cor-superficie); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; }
+.chat-list { border-right: 1px solid var(--cor-borda); overflow-y: auto; }
+.chat-list__vazio { padding: var(--esp-3); }
+.chat-item { display: block; width: 100%; text-align: left; padding: var(--esp-3); border: 0; border-bottom: 1px solid var(--cor-borda); background: none; font: inherit; cursor: pointer; }
+.chat-item:hover { background: #faf5ec; }
+.chat-item.is-ativa { background: #fdf0e6; }
+.chat-item__topo { display: flex; justify-content: space-between; gap: var(--esp-2); font-weight: 700; }
+.chat-item__sub { font-size: var(--tam-pequeno); color: var(--cor-texto-suave); }
+.chat-item__previa { font-size: var(--tam-pequeno); color: var(--cor-texto-suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.chat-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.chat-panel__header { padding: var(--esp-3); border-bottom: 1px solid var(--cor-borda); font-weight: 700; }
+.chat-messages { flex: 1; overflow-y: auto; padding: var(--esp-3); display: flex; flex-direction: column; gap: var(--esp-2); }
+.chat-messages--solto { background: var(--cor-superficie); border-radius: var(--raio); box-shadow: var(--sombra); max-width: 700px; }
+.chat-aviso { margin: 0; padding: var(--esp-2) var(--esp-3); background: #fdf4e0; color: #7a5214; font-size: var(--tam-pequeno); }
+.chat-form { display: flex; gap: var(--esp-2); padding: var(--esp-3); border-top: 1px solid var(--cor-borda); }
+.chat-form textarea { flex: 1; }
+
+.msg { max-width: 75%; display: flex; flex-direction: column; gap: 2px; }
+.msg--minha { align-self: flex-end; align-items: flex-end; }
+.msg--outro { align-self: flex-start; }
+.msg__autor, .msg__hora { font-size: 0.75rem; color: var(--cor-texto-suave); }
+.msg__texto { padding: 8px 12px; border-radius: var(--raio); background: #f1ebe1; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg--minha .msg__texto { background: var(--cor-primaria); color: #fff; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 760px) {
+  .detalhe { grid-template-columns: 1fr; }
+  .chat-app { grid-template-columns: 1fr; height: auto; }
+  .chat-list { max-height: 220px; border-right: 0; border-bottom: 1px solid var(--cor-borda); }
+  .chat-panel { height: 60vh; }
+  .navbar__links { order: 3; flex-basis: 100%; }
+}
