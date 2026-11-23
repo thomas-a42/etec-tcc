@@ -1,11 +1,83 @@
-"""Sessão, papéis (user / ong / admin) e decorator de proteção de rotas."""
+"""Autenticação por JWT, papéis (user / ong / admin) e decorator de proteção de rotas.
+
+O token é um JWT assinado (HS256) com sub (id), role, iat, exp e iss.
+Ele viaja num cookie HttpOnly (o front-end não muda) ou, para clientes de API,
+no cabeçalho `Authorization: Bearer <token>`. A cada request o usuário é
+recarregado do banco, então conta suspensa/removida perde acesso na hora.
+"""
+import time
 from functools import wraps
 
-from flask import flash, g, jsonify, redirect, request, session, url_for
+import jwt
+from flask import flash, g, jsonify, redirect, request, url_for
 
+import config
 from db import query
 
 ROLES = ("user", "ong", "admin")
+
+
+def create_token(role, actor_id):
+    now = int(time.time())
+    payload = {
+        "sub": str(actor_id),
+        "role": role,
+        "iat": now,
+        "exp": now + config.JWT_EXPIRES_MIN * 60,
+        "iss": config.JWT_ISSUER,
+    }
+    return jwt.encode(payload, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM)
+
+
+def decode_token(token):
+    """Devolve os claims ou None se o token for inválido/expirado."""
+    try:
+        return jwt.decode(
+            token,
+            config.JWT_SECRET,
+            algorithms=[config.JWT_ALGORITHM],  # nunca aceitar "none"
+            issuer=config.JWT_ISSUER,
+            options={"require": ["exp", "iat", "sub", "role"]},
+        )
+    except jwt.InvalidTokenError:
+        return None
+
+
+def _read_token():
+    """(token, veio_do_cookie). Cabeçalho Bearer tem prioridade sobre o cookie."""
+    auth = request.headers.get("Authorization", "")
+    if auth[:7].lower() == "bearer ":
+        return auth[7:].strip(), False
+    return request.cookies.get(config.JWT_COOKIE_NAME), True
+
+
+def _set_cookie(response, token):
+    response.set_cookie(
+        config.JWT_COOKIE_NAME, token,
+        max_age=config.JWT_EXPIRES_MIN * 60,
+        httponly=True, samesite="Lax", secure=config.JWT_COOKIE_SECURE, path="/",
+    )
+
+
+def _clear_cookie(response):
+    response.delete_cookie(config.JWT_COOKIE_NAME, path="/",
+                           httponly=True, samesite="Lax", secure=config.JWT_COOKIE_SECURE)
+
+
+def apply_token_cookie(response):
+    """after_request: grava/renova/remove o cookie do JWT conforme o que ocorreu no request."""
+    if g.get("clear_token"):
+        _clear_cookie(response)
+    elif g.get("new_token"):
+        _set_cookie(response, g.new_token)
+    elif g.get("actor") and g.get("token_from_cookie") and g.get("token_claims"):
+        # renovação deslizante: passou da metade da validade -> emite um token novo
+        restante = g.token_claims["exp"] - time.time()
+        if restante < config.JWT_EXPIRES_MIN * 30:
+            _set_cookie(response, create_token(g.actor["role"], g.actor["id"]))
+    elif g.get("token_invalid"):
+        _clear_cookie(response)
+    return response
 
 
 def load_actor():
@@ -13,8 +85,16 @@ def load_actor():
     g.actor = None
     if request.endpoint == "static":
         return
-    role, aid = session.get("role"), session.get("id")
+    token, from_cookie = _read_token()
+    if not token:
+        return
+    claims = decode_token(token)
+    if not claims:
+        g.token_invalid = True
+        return
+    role, aid = claims["role"], claims["sub"]
     if role not in ROLES or not aid:
+        g.token_invalid = True
         return
 
     if role == "ong":
@@ -31,9 +111,12 @@ def load_actor():
         )
         ok = bool(row) and row["status"] == "ativo"
 
-    if not ok:  # conta removida, suspensa ou rejeitada -> derruba a sessão
-        session.clear()
+    if not ok:  # conta removida, suspensa ou rejeitada -> derruba o acesso
+        g.clear_token = True
         return
+
+    g.token_claims = claims
+    g.token_from_cookie = from_cookie
 
     g.actor = {
         "role": role,
@@ -52,9 +135,14 @@ def safe_next(url):
 
 
 def login_session(role, actor_id):
-    session.clear()
-    session["role"] = role
-    session["id"] = str(actor_id)
+    """Emite o JWT; o cookie é gravado em apply_token_cookie (after_request)."""
+    g.new_token = create_token(role, actor_id)
+    g.clear_token = False
+
+
+def logout_session():
+    g.new_token = None
+    g.clear_token = True
 
 
 def require(*roles):
