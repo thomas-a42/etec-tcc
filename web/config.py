@@ -11,6 +11,15 @@ DATABASE_URL = os.environ.get(
 # Troque em produção (assina o cookie de sessão)
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-troque-esta-chave")
 
+# JWT (autenticação). Em produção defina JWT_SECRET (>= 32 caracteres aleatórios).
+JWT_SECRET = os.environ.get("JWT_SECRET", SECRET_KEY)
+JWT_ALGORITHM = "HS256"
+JWT_ISSUER = "adocao-animal"
+JWT_EXPIRES_MIN = int(os.environ.get("JWT_EXPIRES_MIN", "120"))  # validade do token
+JWT_COOKIE_NAME = "access_token"
+# Ative (=1) quando o site estiver em HTTPS
+JWT_COOKIE_SECURE = os.environ.get("JWT_COOKIE_SECURE", "0") == "1"
+
 SITE_NOME = "Adoção Animal"
 TIMEZONE = "America/Sao_Paulo"
 
