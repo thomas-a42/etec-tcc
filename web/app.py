@@ -7,7 +7,7 @@ from flask import Flask, g, render_template
 
 import config
 from routes import register_routes
-from security import load_actor
+from security import apply_token_cookie, load_actor
 
 ROTULOS = {
     "macho": "Macho", "femea": "Fêmea", "desconhecido": "Não informado",
@@ -32,7 +32,11 @@ def create_app():
     app.config.from_object(config)
     app.json.default = _json_default
 
+    if config.JWT_SECRET == "dev-troque-esta-chave" and not app.debug:
+        app.logger.warning("JWT_SECRET/SECRET_KEY padrão em uso — defina uma chave forte em produção.")
+
     app.before_request(load_actor)
+    app.after_request(apply_token_cookie)
 
     @app.context_processor
     def globais():
