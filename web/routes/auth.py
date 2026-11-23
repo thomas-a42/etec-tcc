@@ -1,10 +1,10 @@
 """Login, cadastro e logout."""
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from psycopg2 import errors
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import execute, query
-from security import login_session, safe_next
+from security import login_session, logout_session, safe_next
 
 bp = Blueprint("auth", __name__)
 
@@ -124,5 +124,5 @@ def register_ong():
 
 @bp.route("/sair")
 def logout():
-    session.clear()
+    logout_session()
     return redirect(url_for("public.home"))
