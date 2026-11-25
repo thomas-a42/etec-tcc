@@ -1,53 +1,206 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}Início{% endblock %} · {{ SITE_NOME }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-  {% block head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AdoteSocrates - Adoção Responsável{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'moss': {
+                            DEFAULT: '#4A5D23',
+                            light: '#5B722C',
+                            dark: '#3A491B'
+                        },
+                        'apple': {
+                            DEFAULT: '#8DB600',
+                            light: '#A4D400',
+                            dark: '#739500'
+                        },
+                        'flax': {
+                            DEFAULT: '#EEDC82',
+                            light: '#F5E8A8',
+                            dark: '#D8C35F'
+                        },
+                        'golden': {
+                            DEFAULT: '#996515',
+                            light: '#B3771B',
+                            dark: '#7F5310'
+                        },
+                        'bistre': {
+                            DEFAULT: '#3D2B1F',
+                            light: '#543C2C',
+                            dark: '#261A13'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFCF7;
+            color: #3D2B1F;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="font-sans antialiased flex flex-col min-h-screen">
 
-  <header class="navbar">
-    <div class="container navbar__inner">
-      <a class="navbar__brand" href="{{ url_for('public.home') }}">🐾 {{ SITE_NOME }}</a>
-      <nav class="navbar__links">
-        <a href="{{ url_for('public.home') }}">Início</a>
-        <a href="{{ url_for('public.busca') }}">Buscar</a>
-        {% if actor and actor.role == 'user' %}
-          <a href="{{ url_for('chat.pagina') }}">Mensagens</a>
-        {% elif actor and actor.role == 'ong' %}
-          <a href="{{ url_for('ong.dashboard') }}">Painel da ONG</a>
-        {% elif actor and actor.role == 'admin' %}
-          <a href="{{ url_for('admin.painel') }}">Painel admin</a>
-        {% endif %}
-      </nav>
-      <div class="navbar__conta">
-        {% if actor %}
-          <span class="muted">{{ actor.nome }}</span>
-          <a class="btn btn--secundario btn--pequeno" href="{{ url_for('auth.logout') }}">Sair</a>
-        {% else %}
-          <a class="btn btn--secundario btn--pequeno" href="{{ url_for('auth.login_user') }}">Entrar</a>
-          <a class="btn btn--pequeno" href="{{ url_for('auth.login_staff') }}">Sou ONG</a>
-        {% endif %}
-      </div>
-    </div>
-  </header>
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-flax/40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <a href="{{ url_for('public.home') }}" class="flex items-center gap-2.5 group shrink-0">
+                <div class="bg-moss text-flax-light p-2.5 rounded-2xl group-hover:scale-105 transition-transform shadow-md">
+                    <i class="fa-solid fa-paw text-xl"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-bistre">Adote<span class="text-moss">Socrates</span></span>
+            </a>
 
-  <main class="container {% block main_class %}{% endblock %}">
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-      {% for categoria, texto in mensagens %}
-        <div class="flash flash--{{ categoria }}">{{ texto }}</div>
-      {% endfor %}
-    {% endwith %}
+            <!-- Barra de Pesquisa -->
+            <form action="{{ url_for('public.busca') }}" method="get" class="hidden lg:flex flex-1 max-w-md mx-4">
+                <div class="relative w-full flex items-center">
+                    <input
+                        type="search"
+                        name="q"
+                        value="{{ request.args.get('q', '') }}"
+                        placeholder="Buscar por espécie, porte, raça ou cidade..."
+                        class="w-full bg-flax/20 border border-golden/30 rounded-full pl-4 pr-11 py-2 text-sm text-bistre placeholder:text-bistre/50 focus:outline-none focus:ring-2 focus:ring-moss transition"
+                    >
+                    <button
+                        type="submit"
+                        aria-label="Buscar"
+                        class="absolute right-1.5 bg-moss hover:bg-moss-dark text-white w-8 h-8 rounded-full flex items-center justify-center transition shadow-sm"
+                    >
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </button>
+                </div>
+            </form>
 
-    {% block conteudo %}{% endblock %}
-  </main>
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-6 font-medium text-sm text-bistre/80">
+                <a href="{{ url_for('public.home') }}" class="hover:text-moss transition-colors">Início</a>
+                <a href="{{ url_for('public.busca') }}" class="hover:text-moss transition-colors">Animais</a>
+                <a href="{{ url_for('auth.login_user') }}" class="hover:text-moss transition-colors">Entrar</a>
+            </nav>
 
-  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-  {% block scripts %}{% endblock %}
+            <!-- CTA Button -->
+            <div class="hidden md:block shrink-0">
+                <a href="{{ url_for('ong.dashboard') }}" class="bg-apple hover:bg-apple-dark text-bistre-dark font-bold px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-heart text-bistre"></i> Área da ONG
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-bistre text-2xl focus:outline-none p-2" aria-label="Abrir Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-flax/50 px-4 pt-2 pb-6 space-y-3">
+            <form action="{{ url_for('public.busca') }}" method="get" class="flex gap-2 pb-2">
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ request.args.get('q', '') }}"
+                    placeholder="Buscar animais..."
+                    class="flex-1 bg-flax/20 border border-golden/30 rounded-xl px-3.5 py-2 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss"
+                >
+                <button type="submit" class="bg-moss text-white px-4 py-2 rounded-xl text-sm font-semibold">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <a href="{{ url_for('public.home') }}" class="block text-bistre font-medium hover:text-moss py-2 border-b border-gray-100">Início</a>
+            <a href="{{ url_for('public.busca') }}" class="block text-bistre font-medium hover:text-moss py-2 border-b border-gray-100">Animais Disponíveis</a>
+            <a href="{{ url_for('auth.login_user') }}" class="block text-bistre font-medium hover:text-moss py-2 border-b border-gray-100">Entrar</a>
+            <a href="{{ url_for('ong.dashboard') }}" class="mt-4 w-full bg-apple text-bistre-dark font-bold py-3 rounded-xl text-center block shadow">
+                <i class="fa-solid fa-heart mr-2"></i> Área da ONG / Protetor
+            </a>
+        </div>
+    </header>
+
+    <!-- Sub-cabeçalho de Filtros Rápidos -->
+    <nav class="bg-white/80 border-b border-flax/60 py-2.5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-6 text-xs sm:text-sm overflow-x-auto whitespace-nowrap">
+            <a href="{{ url_for('public.busca') }}" class="text-bistre font-semibold hover:text-moss transition">Todos os Pets</a>
+            <a href="{{ url_for('public.busca', especie='cachorro') }}" class="text-bistre/75 hover:text-moss transition">🐶 Cachorros</a>
+            <a href="{{ url_for('public.busca', especie='gato') }}" class="text-bistre/75 hover:text-moss transition">🐱 Gatos</a>
+            <a href="{{ url_for('public.busca', idade_max=1) }}" class="text-bistre/75 hover:text-moss transition">🍼 Filhotes</a>
+            <a href="{{ url_for('public.busca', vacinado=1, castrado=1) }}" class="text-bistre/75 hover:text-moss transition">💚 Vacinados e Castrados</a>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Dinâmico -->
+    <main class="flex-grow py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-bistre text-flax-light pt-14 pb-8 border-t border-bistre-light mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+                <div class="space-y-3">
+                    <a href="{{ url_for('public.home') }}" class="flex items-center gap-2">
+                        <div class="bg-moss text-flax p-2 rounded-xl">
+                            <i class="fa-solid fa-paw"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-white">Adote<span class="text-apple">Socrates</span></span>
+                    </a>
+                    <p class="text-sm text-flax/70">Plataforma dedicada à conscientização, resgate e adoção responsável de animais.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-3">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-flax/70">
+                        <li><a href="{{ url_for('public.home') }}" class="hover:text-apple transition">Início</a></li>
+                        <li><a href="{{ url_for('public.busca') }}" class="hover:text-apple transition">Buscar Animais</a></li>
+                        <li><a href="{{ url_for('auth.login_user') }}" class="hover:text-apple transition">Entrar como Usuário</a></li>
+                        <li><a href="{{ url_for('auth.login_staff') }}" class="hover:text-apple transition">Acesso ONGs e Admin</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-3">Contato</h4>
+                    <ul class="space-y-2 text-sm text-flax/70">
+                        <li><i class="fa-solid fa-envelope mr-2 text-apple"></i> contato@adotesocrates.org</li>
+                        <li><i class="fa-solid fa-location-dot mr-2 text-apple"></i> São Paulo - SP, Brasil</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-bistre-light pt-6 text-center text-xs text-flax/50">
+                <p>&copy; 2026 AdoteSocrates. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if (btn && menu) {
+                btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>
