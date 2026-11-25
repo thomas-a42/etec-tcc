@@ -1,63 +1,90 @@
 {% extends "base.html" %}
-{% block titulo %}{{ a.nome_animal }}{% endblock %}
+{% block title %}{{ a.nome_animal }} - AdoteSocrates{% endblock %}
 
-{% block conteudo %}
-<article class="detalhe">
-  <div class="galeria" id="galeria">
-    {% if imagens %}
-      <img class="galeria__principal" id="galeria-principal" src="{{ imagens[0].url }}" alt="Foto de {{ a.nome_animal }}">
-      {% if imagens|length > 1 %}
-      <div class="galeria__miniaturas">
-        {% for img in imagens %}
-          <button type="button" class="galeria__mini" data-src="{{ img.url }}" aria-label="Ver foto {{ loop.index }}">
-            <img src="{{ img.url }}" alt="">
-          </button>
-        {% endfor %}
-      </div>
-      {% endif %}
-    {% else %}
-      <div class="galeria__vazia">🐾</div>
-    {% endif %}
-  </div>
+{% block content %}
+<article class="bg-white rounded-3xl border border-flax/60 shadow-sm overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+        <!-- Galeria -->
+        <div id="galeria" class="bg-flax/20 p-6 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-flax/50">
+            {% if imagens %}
+                <img id="galeria-principal" src="{{ imagens[0].url }}" alt="Foto de {{ a.nome_animal }}"
+                     class="w-full h-80 sm:h-96 object-cover rounded-2xl shadow-md border-2 border-white">
+                {% if imagens|length > 1 %}
+                    <div class="flex gap-3 mt-4 overflow-x-auto pb-1">
+                        {% for img in imagens %}
+                            <button type="button" data-src="{{ img.url }}" aria-label="Ver foto {{ loop.index }}"
+                                    class="galeria__mini w-16 h-16 rounded-xl overflow-hidden border-2 border-white shadow hover:border-moss transition shrink-0">
+                                <img src="{{ img.url }}" alt="" class="w-full h-full object-cover">
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="h-80 flex items-center justify-center text-6xl bg-flax/30 rounded-2xl text-moss">🐾</div>
+            {% endif %}
+        </div>
 
-  <div class="detalhe__info">
-    <h1>{{ a.nome_animal }} <span class="badge badge--{{ a.status }}">{{ a.status|rotulo }}</span></h1>
-    <ul class="tags">
-      <li class="tag">{{ a.especie|capitalize }}</li>
-      {% if a.raca %}<li class="tag">{{ a.raca }}</li>{% endif %}
-      {% if a.sexo %}<li class="tag">{{ a.sexo|rotulo }}</li>{% endif %}
-      {% if a.porte %}<li class="tag">Porte {{ a.porte|rotulo|lower }}</li>{% endif %}
-      <li class="tag">{{ a.idade|idade }}</li>
-      {% if a.vacinado %}<li class="tag tag--ok">Vacinado</li>{% endif %}
-      {% if a.castrado %}<li class="tag tag--ok">Castrado</li>{% endif %}
-    </ul>
+        <!-- Informações -->
+        <div class="p-6 sm:p-10 flex flex-col justify-between space-y-6">
+            <div>
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-bistre">{{ a.nome_animal }}</h1>
+                    <span class="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-apple text-bistre-dark">
+                        {{ a.status|rotulo }}
+                    </span>
+                </div>
 
-    <p class="detalhe__descricao">{{ a.descricao }}</p>
+                <ul class="flex flex-wrap gap-2 mb-6">
+                    <li class="bg-flax/30 text-bistre text-xs font-semibold px-3 py-1.5 rounded-full border border-flax/70">{{ a.especie|capitalize }}</li>
+                    {% if a.raca %}<li class="bg-flax/30 text-bistre text-xs font-semibold px-3 py-1.5 rounded-full border border-flax/70">{{ a.raca }}</li>{% endif %}
+                    {% if a.sexo %}<li class="bg-flax/30 text-bistre text-xs font-semibold px-3 py-1.5 rounded-full border border-flax/70">{{ a.sexo|rotulo }}</li>{% endif %}
+                    {% if a.porte %}<li class="bg-flax/30 text-bistre text-xs font-semibold px-3 py-1.5 rounded-full border border-flax/70">Porte {{ a.porte|rotulo|lower }}</li>{% endif %}
+                    <li class="bg-flax/30 text-bistre text-xs font-semibold px-3 py-1.5 rounded-full border border-flax/70">{{ a.idade|idade }}</li>
+                    {% if a.vacinado %}<li class="bg-moss/15 text-moss-dark text-xs font-bold px-3 py-1.5 rounded-full border border-moss/30">Vacinado</li>{% endif %}
+                    {% if a.castrado %}<li class="bg-moss/15 text-moss-dark text-xs font-bold px-3 py-1.5 rounded-full border border-moss/30">Castrado</li>{% endif %}
+                </ul>
 
-    <div class="caixa">
-      <strong>{{ a.ong_nome }}</strong>
-      <span class="muted">{{ a.cidade }}/{{ a.estado }}</span>
-      {% if a.ong_descricao %}<p class="muted">{{ a.ong_descricao }}</p>{% endif %}
+                <div class="mb-6">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-golden mb-2">História e Comportamento</h2>
+                    <p class="text-bistre/80 text-sm sm:text-base leading-relaxed">{{ a.descricao }}</p>
+                </div>
+
+                <div class="bg-flax/20 p-4 rounded-2xl border border-flax/60">
+                    <div class="flex items-center justify-between gap-2">
+                        <strong class="text-bistre text-sm">{{ a.ong_nome }}</strong>
+                        <span class="text-xs text-bistre/70 font-medium"><i class="fa-solid fa-location-dot text-golden mr-1"></i>{{ a.cidade }}/{{ a.estado }}</span>
+                    </div>
+                    {% if a.ong_descricao %}<p class="text-xs text-bistre/70 mt-2">{{ a.ong_descricao }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="pt-2 flex flex-wrap gap-3">
+                {% if dono %}
+                    <a href="{{ url_for('ong.editar', anuncio_id=a.id) }}" class="bg-moss hover:bg-moss-dark text-white font-bold px-6 py-3 rounded-full shadow transition text-sm">
+                        Editar anúncio
+                    </a>
+                {% elif a.status in ('disponivel', 'reservado') %}
+                    {% if actor and actor.role == 'user' %}
+                        {% if chat_existente %}
+                            <a href="{{ url_for('chat.pagina', c=chat_existente.id) }}" class="bg-moss hover:bg-moss-dark text-white font-bold px-6 py-3 rounded-full shadow transition text-sm inline-flex items-center gap-2">
+                                <i class="fa-solid fa-comments"></i> Abrir conversa
+                            </a>
+                        {% else %}
+                            <form method="post" action="{{ url_for('chat.conversar', anuncio_id=a.id) }}">
+                                <button type="submit" class="bg-moss hover:bg-moss-dark text-white font-bold px-6 py-3 rounded-full shadow transition text-sm inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-heart"></i> Tenho interesse em adotar
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% elif not actor %}
+                        <a href="{{ url_for('auth.login_user', next=request.path) }}" class="bg-moss hover:bg-moss-dark text-white font-bold px-6 py-3 rounded-full shadow transition text-sm">
+                            Entre para conversar com a ONG
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-    <div class="detalhe__acoes">
-      {% if dono %}
-        <a class="btn" href="{{ url_for('ong.editar', anuncio_id=a.id) }}">Editar anúncio</a>
-      {% elif a.status in ('disponivel', 'reservado') %}
-        {% if actor and actor.role == 'user' %}
-          {% if chat_existente %}
-            <a class="btn" href="{{ url_for('chat.pagina', c=chat_existente.id) }}">Abrir conversa</a>
-          {% else %}
-            <form method="post" action="{{ url_for('chat.conversar', anuncio_id=a.id) }}">
-              <button class="btn" type="submit">Tenho interesse em adotar</button>
-            </form>
-          {% endif %}
-        {% elif not actor %}
-          <a class="btn" href="{{ url_for('auth.login_user', next=request.path) }}">Entre para conversar com a ONG</a>
-        {% endif %}
-      {% endif %}
-    </div>
-  </div>
 </article>
 {% endblock %}
 
