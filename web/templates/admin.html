@@ -1,112 +1,178 @@
 {% extends "base.html" %}
-{% block titulo %}Painel administrativo{% endblock %}
+{% block title %}Painel administrativo - AdoteSocrates{% endblock %}
 
-{% block conteudo %}
-<h1>Painel administrativo</h1>
+{% block content %}
+<div class="mb-8">
+    <span class="text-golden font-semibold text-xs uppercase tracking-wider">Moderação e Gestão</span>
+    <h1 class="text-3xl font-bold text-bistre mt-1">Painel administrativo</h1>
+</div>
 
-<nav class="tabs">
-  <a class="tabs__item {{ 'is-ativa' if aba == 'usuarios' }}" href="{{ url_for('admin.painel', aba='usuarios') }}">Usuários</a>
-  <a class="tabs__item {{ 'is-ativa' if aba == 'ongs' }}" href="{{ url_for('admin.painel', aba='ongs') }}">
-    ONGs {% if pendentes %}<span class="contador">{{ pendentes }}</span>{% endif %}
-  </a>
-  <a class="tabs__item {{ 'is-ativa' if aba == 'anuncios' }}" href="{{ url_for('admin.painel', aba='anuncios') }}">Anúncios</a>
-  <a class="tabs__item {{ 'is-ativa' if aba == 'chats' }}" href="{{ url_for('admin.painel', aba='chats') }}">Chats</a>
+<nav class="flex flex-wrap gap-2 mb-6 bg-flax/25 p-2 rounded-2xl border border-flax/60">
+    <a href="{{ url_for('admin.painel', aba='usuarios') }}"
+       class="px-4 py-2 rounded-xl text-sm font-semibold transition {{ 'bg-moss text-white shadow-sm' if aba == 'usuarios' else 'text-bistre hover:bg-white/70' }}">
+        Usuários
+    </a>
+    <a href="{{ url_for('admin.painel', aba='ongs') }}"
+       class="px-4 py-2 rounded-xl text-sm font-semibold transition inline-flex items-center gap-2 {{ 'bg-moss text-white shadow-sm' if aba == 'ongs' else 'text-bistre hover:bg-white/70' }}">
+        ONGs
+        {% if pendentes %}
+            <span class="bg-apple text-bistre-dark text-xs font-extrabold px-2 py-0.5 rounded-full">{{ pendentes }}</span>
+        {% endif %}
+    </a>
+    <a href="{{ url_for('admin.painel', aba='anuncios') }}"
+       class="px-4 py-2 rounded-xl text-sm font-semibold transition {{ 'bg-moss text-white shadow-sm' if aba == 'anuncios' else 'text-bistre hover:bg-white/70' }}">
+        Anúncios
+    </a>
+    <a href="{{ url_for('admin.painel', aba='chats') }}"
+       class="px-4 py-2 rounded-xl text-sm font-semibold transition {{ 'bg-moss text-white shadow-sm' if aba == 'chats' else 'text-bistre hover:bg-white/70' }}">
+        Chats
+    </a>
 </nav>
 
-<form class="busca-inline" method="get">
-  <input type="hidden" name="aba" value="{{ aba }}">
-  <input type="search" name="q" value="{{ q }}" placeholder="Buscar nesta aba…">
-  <button class="btn btn--secundario" type="submit">Buscar</button>
+<form method="get" class="flex flex-col sm:flex-row gap-3 mb-8 max-w-lg">
+    <input type="hidden" name="aba" value="{{ aba }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar nesta aba…"
+           class="flex-1 bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+    <button type="submit" class="bg-golden hover:bg-golden-dark text-white font-bold px-6 py-2.5 rounded-xl transition text-sm">
+        Buscar
+    </button>
 </form>
 
 {% if not rows %}
-  <p class="muted">Nenhum registro encontrado.</p>
+    <div class="bg-white p-10 rounded-3xl border border-flax/60 text-center">
+        <p class="text-sm text-bistre/60">Nenhum registro encontrado.</p>
+    </div>
 {% else %}
-<div class="tabela-wrap">
-<table class="tabela">
+    <div class="bg-white rounded-3xl border border-flax/60 shadow-sm overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+            {% if aba == 'usuarios' %}
+            <thead class="bg-flax/30 text-bistre uppercase text-xs font-bold border-b border-flax/60">
+                <tr>
+                    <th class="py-3.5 px-4">Nome</th>
+                    <th class="py-3.5 px-4">E-mail</th>
+                    <th class="py-3.5 px-4">Telefone</th>
+                    <th class="py-3.5 px-4">Cadastro</th>
+                    <th class="py-3.5 px-4">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-flax/40">
+                {% for r in rows %}
+                <tr class="hover:bg-flax/10 transition">
+                    <td class="py-3.5 px-4 font-semibold text-bistre">{{ r.nome }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.email }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.telefone or '—' }}</td>
+                    <td class="py-3.5 px-4 text-bistre/70">{{ r.data_cadastro|datahora }}</td>
+                    <td class="py-3.5 px-4">
+                        <form method="post" action="{{ url_for('admin.usuario_status', item_id=r.id) }}">
+                            <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                            <select name="valor" data-autosubmit class="bg-flax/20 border border-golden/30 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+                                {% for s in ('ativo', 'suspenso') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-  {% if aba == 'usuarios' %}
-  <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Cadastro</th><th>Status</th></tr></thead>
-  <tbody>
-    {% for r in rows %}
-    <tr>
-      <td>{{ r.nome }}</td><td>{{ r.email }}</td><td>{{ r.telefone or '—' }}</td>
-      <td>{{ r.data_cadastro|datahora }}</td>
-      <td>
-        <form method="post" action="{{ url_for('admin.usuario_status', item_id=r.id) }}">
-          <input type="hidden" name="voltar" value="{{ request.full_path }}">
-          <select name="valor" data-autosubmit>
-            {% for s in ('ativo', 'suspenso') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
-          </select>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+            {% elif aba == 'ongs' %}
+            <thead class="bg-flax/30 text-bistre uppercase text-xs font-bold border-b border-flax/60">
+                <tr>
+                    <th class="py-3.5 px-4">Nome</th>
+                    <th class="py-3.5 px-4">E-mail</th>
+                    <th class="py-3.5 px-4">CNPJ</th>
+                    <th class="py-3.5 px-4">Local</th>
+                    <th class="py-3.5 px-4">Cadastro</th>
+                    <th class="py-3.5 px-4">Verificação</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-flax/40">
+                {% for r in rows %}
+                <tr class="hover:bg-flax/10 transition">
+                    <td class="py-3.5 px-4 font-semibold text-bistre">{{ r.nome }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.email }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.cnpj or '—' }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.cidade }}/{{ r.estado }}</td>
+                    <td class="py-3.5 px-4 text-bistre/70">{{ r.data_cadastro|datahora }}</td>
+                    <td class="py-3.5 px-4">
+                        <form method="post" action="{{ url_for('admin.ong_verificacao', item_id=r.id) }}">
+                            <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                            <select name="valor" data-autosubmit class="bg-flax/20 border border-golden/30 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+                                {% for s in ('pendente', 'verificada', 'rejeitada') %}<option value="{{ s }}" {{ 'selected' if s == r.status_verificacao }}>{{ s|rotulo }}</option>{% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-  {% elif aba == 'ongs' %}
-  <thead><tr><th>Nome</th><th>E-mail</th><th>CNPJ</th><th>Local</th><th>Cadastro</th><th>Verificação</th></tr></thead>
-  <tbody>
-    {% for r in rows %}
-    <tr>
-      <td>{{ r.nome }}</td><td>{{ r.email }}</td><td>{{ r.cnpj or '—' }}</td>
-      <td>{{ r.cidade }}/{{ r.estado }}</td><td>{{ r.data_cadastro|datahora }}</td>
-      <td>
-        <form method="post" action="{{ url_for('admin.ong_verificacao', item_id=r.id) }}">
-          <input type="hidden" name="voltar" value="{{ request.full_path }}">
-          <select name="valor" data-autosubmit>
-            {% for s in ('pendente', 'verificada', 'rejeitada') %}<option value="{{ s }}" {{ 'selected' if s == r.status_verificacao }}>{{ s|rotulo }}</option>{% endfor %}
-          </select>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+            {% elif aba == 'anuncios' %}
+            <thead class="bg-flax/30 text-bistre uppercase text-xs font-bold border-b border-flax/60">
+                <tr>
+                    <th class="py-3.5 px-4">Animal</th>
+                    <th class="py-3.5 px-4">Espécie</th>
+                    <th class="py-3.5 px-4">ONG</th>
+                    <th class="py-3.5 px-4">Publicado em</th>
+                    <th class="py-3.5 px-4">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-flax/40">
+                {% for r in rows %}
+                <tr class="hover:bg-flax/10 transition">
+                    <td class="py-3.5 px-4 font-semibold"><a href="{{ url_for('public.anuncio', anuncio_id=r.id) }}" class="text-moss hover:underline">{{ r.nome_animal }}</a></td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.especie|capitalize }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.ong_nome }}</td>
+                    <td class="py-3.5 px-4 text-bistre/70">{{ r.data_publicacao|datahora }}</td>
+                    <td class="py-3.5 px-4">
+                        <form method="post" action="{{ url_for('admin.anuncio_status', item_id=r.id) }}">
+                            <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                            <select name="valor" data-autosubmit class="bg-flax/20 border border-golden/30 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+                                {% for s in ('disponivel', 'reservado', 'adotado', 'inativo') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-  {% elif aba == 'anuncios' %}
-  <thead><tr><th>Animal</th><th>Espécie</th><th>ONG</th><th>Publicado em</th><th>Status</th></tr></thead>
-  <tbody>
-    {% for r in rows %}
-    <tr>
-      <td><a href="{{ url_for('public.anuncio', anuncio_id=r.id) }}">{{ r.nome_animal }}</a></td>
-      <td>{{ r.especie|capitalize }}</td><td>{{ r.ong_nome }}</td>
-      <td>{{ r.data_publicacao|datahora }}</td>
-      <td>
-        <form method="post" action="{{ url_for('admin.anuncio_status', item_id=r.id) }}">
-          <input type="hidden" name="voltar" value="{{ request.full_path }}">
-          <select name="valor" data-autosubmit>
-            {% for s in ('disponivel', 'reservado', 'adotado', 'inativo') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
-          </select>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-
-  {% else %}
-  <thead><tr><th>Animal</th><th>Usuário</th><th>ONG</th><th>Mensagens</th><th>Última atividade</th><th>Status</th><th></th></tr></thead>
-  <tbody>
-    {% for r in rows %}
-    <tr>
-      <td>{{ r.nome_animal }}</td><td>{{ r.user_nome }}</td><td>{{ r.ong_nome }}</td>
-      <td>{{ r.total }}</td>
-      <td>{{ (r.data_ultima_mensagem or r.data_criacao)|datahora }}</td>
-      <td>
-        <form method="post" action="{{ url_for('admin.chat_status', item_id=r.id) }}">
-          <input type="hidden" name="voltar" value="{{ request.full_path }}">
-          <select name="valor" data-autosubmit>
-            {% for s in ('aberto', 'encerrado', 'bloqueado') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
-          </select>
-        </form>
-      </td>
-      <td><a class="btn btn--secundario btn--pequeno" href="{{ url_for('admin.chat_ver', chat_id=r.id) }}">Ver conversa</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-  {% endif %}
-
-</table>
-</div>
+            {% else %}
+            <thead class="bg-flax/30 text-bistre uppercase text-xs font-bold border-b border-flax/60">
+                <tr>
+                    <th class="py-3.5 px-4">Animal</th>
+                    <th class="py-3.5 px-4">Usuário</th>
+                    <th class="py-3.5 px-4">ONG</th>
+                    <th class="py-3.5 px-4">Mensagens</th>
+                    <th class="py-3.5 px-4">Última atividade</th>
+                    <th class="py-3.5 px-4">Status</th>
+                    <th class="py-3.5 px-4"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-flax/40">
+                {% for r in rows %}
+                <tr class="hover:bg-flax/10 transition">
+                    <td class="py-3.5 px-4 font-semibold text-bistre">{{ r.nome_animal }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.user_nome }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.ong_nome }}</td>
+                    <td class="py-3.5 px-4 text-bistre/80">{{ r.total }}</td>
+                    <td class="py-3.5 px-4 text-bistre/70">{{ (r.data_ultima_mensagem or r.data_criacao)|datahora }}</td>
+                    <td class="py-3.5 px-4">
+                        <form method="post" action="{{ url_for('admin.chat_status', item_id=r.id) }}">
+                            <input type="hidden" name="voltar" value="{{ request.full_path }}">
+                            <select name="valor" data-autosubmit class="bg-flax/20 border border-golden/30 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+                                {% for s in ('aberto', 'encerrado', 'bloqueado') %}<option value="{{ s }}" {{ 'selected' if s == r.status }}>{{ s|rotulo }}</option>{% endfor %}
+                            </select>
+                        </form>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <a href="{{ url_for('admin.chat_ver', chat_id=r.id) }}" class="bg-flax/30 hover:bg-moss hover:text-white text-bistre font-semibold px-3 py-1.5 rounded-xl text-xs transition inline-block">
+                            Ver conversa
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            {% endif %}
+        </table>
+    </div>
 {% endif %}
 {% endblock %}
 
