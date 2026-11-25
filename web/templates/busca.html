@@ -1,83 +1,117 @@
 {% extends "base.html" %}
-{% block titulo %}Buscar animais{% endblock %}
+{% block title %}Buscar animais - AdoteSocrates{% endblock %}
 
-{% block conteudo %}
+{% block content %}
 {% set v = request.args %}
-<h1>Buscar animais</h1>
 
-<form id="filtros" class="filtros" method="get">
-  <label class="campo">Nome
-    <input type="search" name="q" value="{{ v.get('q', '') }}" placeholder="Ex.: Thor">
-  </label>
+<div class="mb-8">
+    <span class="text-golden font-semibold text-xs uppercase tracking-wider">Encontre o perfil ideal</span>
+    <h1 class="text-3xl sm:text-4xl font-bold text-bistre mt-1">Buscar animais</h1>
+</div>
 
-  <label class="campo">Espécie
-    <select name="especie">
-      <option value="">Todas</option>
-      {% for e in especies %}
-        <option value="{{ e }}" {{ 'selected' if v.get('especie', '')|lower == e|lower }}>{{ e|capitalize }}</option>
-      {% endfor %}
-    </select>
-  </label>
+<form id="filtros" method="get" class="bg-flax/30 p-6 rounded-3xl mb-10 border border-flax/60 shadow-inner">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Nome</label>
+            <input type="search" name="q" value="{{ v.get('q', '') }}" placeholder="Ex.: Thor"
+                   class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+        </div>
 
-  <label class="campo">Raça
-    <input name="raca" list="lista-racas" value="{{ v.get('raca', '') }}" placeholder="Qualquer">
-    <datalist id="lista-racas">
-      {% for r in racas %}<option value="{{ r }}">{% endfor %}
-    </datalist>
-  </label>
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Espécie</label>
+            <select name="especie" class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+                <option value="">Todas</option>
+                {% for e in especies %}
+                    <option value="{{ e }}" {{ 'selected' if v.get('especie', '')|lower == e|lower }}>{{ e|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-  <label class="campo">Sexo
-    <select name="sexo">
-      <option value="">Todos</option>
-      <option value="macho" {{ 'selected' if v.get('sexo') == 'macho' }}>Macho</option>
-      <option value="femea" {{ 'selected' if v.get('sexo') == 'femea' }}>Fêmea</option>
-    </select>
-  </label>
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Raça</label>
+            <input name="raca" list="lista-racas" value="{{ v.get('raca', '') }}" placeholder="Qualquer"
+                   class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+            <datalist id="lista-racas">
+                {% for r in racas %}<option value="{{ r }}">{% endfor %}
+            </datalist>
+        </div>
 
-  <label class="campo">Porte
-    <select name="porte">
-      <option value="">Todos</option>
-      <option value="pequeno" {{ 'selected' if v.get('porte') == 'pequeno' }}>Pequeno</option>
-      <option value="medio" {{ 'selected' if v.get('porte') == 'medio' }}>Médio</option>
-      <option value="grande" {{ 'selected' if v.get('porte') == 'grande' }}>Grande</option>
-    </select>
-  </label>
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Sexo</label>
+            <select name="sexo" class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+                <option value="">Todos</option>
+                <option value="macho" {{ 'selected' if v.get('sexo') == 'macho' }}>Macho</option>
+                <option value="femea" {{ 'selected' if v.get('sexo') == 'femea' }}>Fêmea</option>
+            </select>
+        </div>
 
-  <div class="campo">Idade (anos)
-    <div class="campo__par">
-      <input type="number" min="0" name="idade_min" value="{{ v.get('idade_min', '') }}" placeholder="de" aria-label="Idade mínima">
-      <input type="number" min="0" name="idade_max" value="{{ v.get('idade_max', '') }}" placeholder="até" aria-label="Idade máxima">
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Porte</label>
+            <select name="porte" class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+                <option value="">Todos</option>
+                <option value="pequeno" {{ 'selected' if v.get('porte') == 'pequeno' }}>Pequeno</option>
+                <option value="medio" {{ 'selected' if v.get('porte') == 'medio' }}>Médio</option>
+                <option value="grande" {{ 'selected' if v.get('porte') == 'grande' }}>Grande</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Idade (anos)</label>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" min="0" name="idade_min" value="{{ v.get('idade_min', '') }}" placeholder="de" aria-label="Idade mínima"
+                       class="w-full bg-white border border-golden/30 rounded-xl px-3 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+                <input type="number" min="0" name="idade_max" value="{{ v.get('idade_max', '') }}" placeholder="até" aria-label="Idade máxima"
+                       class="w-full bg-white border border-golden/30 rounded-xl px-3 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Cidade</label>
+            <input name="cidade" value="{{ v.get('cidade', '') }}" placeholder="Ex.: São Paulo"
+                   class="w-full bg-white border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">UF</label>
+                <input name="estado" maxlength="2" value="{{ v.get('estado', '') }}" placeholder="SP"
+                       class="w-full bg-white border border-golden/30 rounded-xl px-3 py-2.5 text-sm text-bistre uppercase focus:outline-none focus:ring-2 focus:ring-moss transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-bistre mb-2 uppercase tracking-wide">Situação</label>
+                <select name="status" class="w-full bg-white border border-golden/30 rounded-xl px-3 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss transition">
+                    <option value="disponivel">Disponível</option>
+                    <option value="reservado" {{ 'selected' if v.get('status') == 'reservado' }}>Reservado</option>
+                </select>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <label class="campo">Cidade
-    <input name="cidade" value="{{ v.get('cidade', '') }}">
-  </label>
+    <div class="mt-5 pt-4 border-t border-flax/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-6">
+            <label class="inline-flex items-center gap-2 text-sm font-medium text-bistre cursor-pointer">
+                <input type="checkbox" name="vacinado" value="1" {{ 'checked' if v.get('vacinado') }} class="rounded accent-moss w-4 h-4">
+                Vacinado
+            </label>
+            <label class="inline-flex items-center gap-2 text-sm font-medium text-bistre cursor-pointer">
+                <input type="checkbox" name="castrado" value="1" {{ 'checked' if v.get('castrado') }} class="rounded accent-moss w-4 h-4">
+                Castrado
+            </label>
+        </div>
 
-  <label class="campo campo--curto">UF
-    <input name="estado" maxlength="2" value="{{ v.get('estado', '') }}">
-  </label>
-
-  <label class="campo">Situação
-    <select name="status">
-      <option value="disponivel">Disponível</option>
-      <option value="reservado" {{ 'selected' if v.get('status') == 'reservado' }}>Reservado</option>
-    </select>
-  </label>
-
-  <div class="campo campo--checks">
-    <label class="check"><input type="checkbox" name="vacinado" value="1" {{ 'checked' if v.get('vacinado') }}> Vacinado</label>
-    <label class="check"><input type="checkbox" name="castrado" value="1" {{ 'checked' if v.get('castrado') }}> Castrado</label>
-  </div>
-
-  <div class="filtros__acoes">
-    <button class="btn" type="submit">Filtrar</button>
-    <a class="btn btn--secundario" href="{{ url_for('public.busca') }}">Limpar</a>
-  </div>
+        <div class="flex items-center gap-3">
+            <button type="submit" class="bg-moss hover:bg-moss-dark text-white font-bold px-6 py-2.5 rounded-full shadow transition text-sm">
+                Filtrar
+            </button>
+            <a href="{{ url_for('public.busca') }}" class="bg-white hover:bg-flax/20 text-bistre border border-golden/30 font-semibold px-5 py-2.5 rounded-full transition text-sm">
+                Limpar
+            </a>
+        </div>
+    </div>
 </form>
 
-<div id="feed" class="grid-cards" data-endpoint="{{ url_for('public.api_anuncios') }}"></div>
-<p id="feed-status" class="feed-status muted" aria-live="polite"></p>
+<div id="feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" data-endpoint="{{ url_for('public.api_anuncios') }}"></div>
+<p id="feed-status" class="text-center text-sm text-bistre/70 mt-8" aria-live="polite"></p>
 <div id="feed-sentinel"></div>
 {% endblock %}
 
