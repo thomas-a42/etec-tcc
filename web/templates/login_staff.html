@@ -1,24 +1,35 @@
 {% extends "base.html" %}
-{% block titulo %}Acesso ONGs e administradores{% endblock %}
+{% block title %}Acesso ONGs e administradores - AdoteSocrates{% endblock %}
 
-{% block conteudo %}
-<section class="auth-card">
-  <h1>Acesso para ONGs e administradores</h1>
-  <p class="muted">Use o e-mail cadastrado da ONG ou da conta de administrador.</p>
+{% block content %}
+<section class="max-w-md mx-auto bg-white p-8 rounded-3xl border border-flax/60 shadow-md">
+    <div class="text-center mb-6">
+        <span class="inline-block bg-flax/60 text-bistre text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+            Área Restrita
+        </span>
+        <h1 class="text-2xl font-extrabold text-bistre">Acesso para ONGs e administradores</h1>
+        <p class="text-sm text-bistre/70 mt-1">Use o e-mail cadastrado da ONG ou da conta de administrador.</p>
+    </div>
 
-  <form method="post" class="form">
-    <label class="campo">E-mail
-      <input type="email" name="email" required autofocus>
-    </label>
-    <label class="campo">Senha
-      <input type="password" name="senha" required>
-    </label>
-    <button class="btn btn--bloco" type="submit">Entrar</button>
-  </form>
+    <form method="post" class="space-y-4">
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-1.5 uppercase tracking-wide">E-mail</label>
+            <input type="email" name="email" required autofocus
+                   class="w-full bg-flax/10 border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+        </div>
+        <div>
+            <label class="block text-xs font-bold text-bistre mb-1.5 uppercase tracking-wide">Senha</label>
+            <input type="password" name="senha" required
+                   class="w-full bg-flax/10 border border-golden/30 rounded-xl px-4 py-2.5 text-sm text-bistre focus:outline-none focus:ring-2 focus:ring-moss">
+        </div>
+        <button type="submit" class="w-full bg-moss hover:bg-moss-dark text-white font-bold py-3 rounded-xl shadow transition text-sm">
+            Entrar
+        </button>
+    </form>
 
-  <p class="auth-card__links">
-    Quer cadastrar sua ONG? <a href="{{ url_for('auth.register_ong') }}">Cadastrar ONG</a><br>
-    Quer adotar? <a href="{{ url_for('auth.login_user') }}">Entrar como usuário</a>
-  </p>
+    <div class="mt-6 pt-5 border-t border-flax/50 text-center text-xs text-bistre/75 space-y-2">
+        <p>Quer cadastrar sua ONG? <a href="{{ url_for('auth.register_ong') }}" class="text-moss font-bold hover:underline">Cadastrar ONG</a></p>
+        <p>Quer adotar? <a href="{{ url_for('auth.login_user') }}" class="text-moss font-bold hover:underline">Entrar como usuário</a></p>
+    </div>
 </section>
 {% endblock %}
