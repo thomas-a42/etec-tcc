@@ -1,19 +1,112 @@
 {% extends "base.html" %}
-{% block titulo %}Início{% endblock %}
 
-{% block conteudo %}
-<section class="hero">
-  <h1>Encontre seu novo melhor amigo</h1>
-  <p>Animais de ONGs de todo o país esperando por um lar.</p>
-  <a class="btn" href="{{ url_for('public.busca') }}">Buscar com filtros</a>
+{% block title %}Início - AdoteSocrates{% endblock %}
+
+{% block content %}
+<!-- Hero / Banner Section -->
+<section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-flax/40 via-flax/20 to-white border border-flax/70 p-8 sm:p-12 mb-12 shadow-sm">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div class="space-y-5 text-center lg:text-left">
+            <span class="inline-block bg-flax/90 text-bistre font-semibold text-xs sm:text-sm px-4 py-1.5 rounded-full uppercase tracking-wider border border-flax-dark/30">
+                🐾 Adoção responsável e cheia de amor
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-bistre leading-tight">
+                Transforme uma vida hoje: seu novo amigo está <span class="text-moss underline decoration-apple decoration-4">esperando</span>.
+            </h1>
+            <p class="text-bistre/80 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
+                Todos os animais disponíveis são acompanhados por protetores independentes ou ONGs verificadas.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+                <a href="{{ url_for('public.busca') }}" class="bg-moss hover:bg-moss-dark text-white font-semibold px-7 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2">
+                    Explorar Todos os Pets <i class="fa-solid fa-arrow-right text-apple-light"></i>
+                </a>
+                <a href="{{ url_for('auth.login_user') }}" class="bg-white hover:bg-flax/25 text-bistre border border-golden/30 font-semibold px-7 py-3.5 rounded-full transition text-center">
+                    Quero Adotar
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 text-center bg-white/90 p-6 rounded-3xl border border-flax/60 shadow-sm">
+            <div class="p-2">
+                <div class="text-2xl sm:text-3xl font-extrabold text-moss">+1.200</div>
+                <div class="text-xs text-bistre/70 font-medium mt-1">Animais Adotados</div>
+            </div>
+            <div class="p-2 border-x border-flax/60">
+                <div class="text-2xl sm:text-3xl font-extrabold text-golden">+800</div>
+                <div class="text-xs text-bistre/70 font-medium mt-1">Voluntários</div>
+            </div>
+            <div class="p-2">
+                <div class="text-2xl sm:text-3xl font-extrabold text-apple-dark">100%</div>
+                <div class="text-xs text-bistre/70 font-medium mt-1">Amor Envolvido</div>
+            </div>
+        </div>
+    </div>
 </section>
 
-<!-- O feed.js preenche #feed com cards vindos de /api/anuncios (rolagem infinita) -->
-<div id="feed" class="grid-cards" data-endpoint="{{ url_for('public.api_anuncios') }}"></div>
-<p id="feed-status" class="feed-status muted" aria-live="polite"></p>
-<div id="feed-sentinel"></div>
-{% endblock %}
+<!-- Listagem de Animais -->
+<section>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
+        <div>
+            <span class="text-golden font-semibold text-xs uppercase tracking-wider">Destaques</span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-bistre">Esperando por um lar</h2>
+        </div>
+        <a href="{{ url_for('public.busca') }}" class="text-sm font-semibold text-moss hover:text-moss-dark inline-flex items-center gap-1.5">
+            Ver todos os animais <i class="fa-solid fa-arrow-right text-xs"></i>
+        </a>
+    </div>
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/feed.js') }}"></script>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Exemplo 1 -->
+        <article class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-flax/60 flex flex-col group">
+            <div class="relative h-56 bg-flax/20 flex items-center justify-center border-b border-flax/40 overflow-hidden">
+                <span class="text-bistre/60 text-sm font-medium">[Foto do Cachorro]</span>
+                <span class="absolute top-3 right-3 bg-moss text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                    Porte Médio
+                </span>
+            </div>
+            <div class="p-6 flex-grow flex flex-col justify-between">
+                <div>
+                    <div class="flex gap-2 mb-3 flex-wrap">
+                        <span class="bg-flax/40 text-bistre text-xs font-semibold px-2.5 py-1 rounded-full border border-flax/70">Vacinado</span>
+                        <span class="bg-flax/40 text-bistre text-xs font-semibold px-2.5 py-1 rounded-full border border-flax/70">Castrado</span>
+                    </div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-xl font-bold text-bistre">Thor</h3>
+                        <span class="text-xs text-bistre/60 font-medium">São Paulo - SP</span>
+                    </div>
+                    <p class="text-xs text-golden font-bold uppercase tracking-wider mb-4">Macho • 2 anos • SRD</p>
+                </div>
+                <a href="{{ url_for('public.busca') }}" class="w-full bg-flax/20 hover:bg-moss hover:text-white text-bistre font-bold py-3 rounded-2xl transition-all duration-300 border border-flax/80 hover:border-transparent text-center text-sm">
+                    Quero Adotar <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                </a>
+            </div>
+        </article>
+
+        <!-- Exemplo 2 -->
+        <article class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-flax/60 flex flex-col group">
+            <div class="relative h-56 bg-flax/20 flex items-center justify-center border-b border-flax/40 overflow-hidden">
+                <span class="text-bistre/60 text-sm font-medium">[Foto da Gata]</span>
+                <span class="absolute top-3 right-3 bg-golden text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                    Porte Pequeno
+                </span>
+            </div>
+            <div class="p-6 flex-grow flex flex-col justify-between">
+                <div>
+                    <div class="flex gap-2 mb-3 flex-wrap">
+                        <span class="bg-flax/40 text-bistre text-xs font-semibold px-2.5 py-1 rounded-full border border-flax/70">Vacinada</span>
+                        <span class="bg-flax/40 text-bistre text-xs font-semibold px-2.5 py-1 rounded-full border border-flax/70">Filhote</span>
+                    </div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-xl font-bold text-bistre">Mel</h3>
+                        <span class="text-xs text-bistre/60 font-medium">Campinas - SP</span>
+                    </div>
+                    <p class="text-xs text-golden font-bold uppercase tracking-wider mb-4">Fêmea • 5 meses • Siamês Mix</p>
+                </div>
+                <a href="{{ url_for('public.busca') }}" class="w-full bg-flax/20 hover:bg-moss hover:text-white text-bistre font-bold py-3 rounded-2xl transition-all duration-300 border border-flax/80 hover:border-transparent text-center text-sm">
+                    Quero Adotar <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
 {% endblock %}
