@@ -1,22 +1,60 @@
 /* ==========================================================
    TOKENS — cores, fontes, espaçamentos, raios.
-   Para mudar a identidade visual, comece por aqui.
    ========================================================== */
 :root {
-  /* Cores */
-  --cor-primaria: #e07a2f;
-  --cor-primaria-escura: #c4651f;
-  --cor-fundo: #faf7f2;
-  --cor-superficie: #ffffff;
-  --cor-texto: #2b2b2b;
-  --cor-texto-suave: #6b6b6b;
-  --cor-borda: #e6e0d6;
-  --cor-sucesso: #2e8b57;
-  --cor-aviso: #b7791f;
-  --cor-erro: #c0392b;
+  /* Paleta AdoteSocrates */
+  --cor-musgo: #4A5D23;
+  --cor-musgo-claro: #5B722C;
+  --cor-musgo-escuro: #3A491B;
+
+  --cor-maca: #8DB600;
+  --cor-maca-clara: #A4D400;
+  --cor-maca-escura: #739500;
+
+  --cor-linho: #EEDC82;
+  --cor-linho-claro: #F5E8A8;
+  --cor-linho-escuro: #D8C35F;
+
+  --cor-dourado: #996515;
+  --cor-dourado-claro: #B3771B;
+  --cor-dourado-escuro: #7F5310;
+
+  --cor-bistre: #3D2B1F;
+  --cor-bistre-claro: #543C2C;
+  --cor-bistre-escuro: #261A13;
+
+  /* Papéis semânticos */
+  --cor-primaria: var(--cor-musgo);
+  --cor-primaria-escura: var(--cor-musgo-escuro);
+  --cor-secundaria: var(--cor-maca);
+  --cor-destaque: var(--cor-dourado);
+  --cor-fundo: #FDFCF7;
+  --cor-superficie: #FFFFFF;
+  --cor-superficie-suave: rgba(238, 220, 130, 0.25);
+
+  /* Tipografia e Bordas */
+  --cor-texto: var(--cor-bistre);
+  --cor-texto-suave: rgba(61, 43, 31, 0.72);
+  --cor-borda: rgba(153, 101, 21, 0.28);
+  --cor-borda-linho: rgba(216, 195, 95, 0.65);
+
+  /* Estados */
+  --cor-sucesso: var(--cor-maca-escura);
+  --cor-aviso: var(--cor-dourado);
+  --cor-erro: #9E2A2B;
+
+  /* Aliases compatíveis com templates legados */
+  --color-primary: var(--cor-musgo);
+  --color-secondary: var(--cor-maca);
+  --color-tertiary: var(--cor-bistre);
+  --color-background: var(--cor-fundo);
+  --color-surface: var(--cor-superficie);
+  --color-text-main: var(--cor-texto);
+  --color-text-muted: var(--cor-texto-suave);
+  --color-border: var(--cor-borda);
 
   /* Tipografia */
-  --fonte: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fonte: 'Teko', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --tam-base: 16px;
   --tam-pequeno: 0.875rem;
 
@@ -27,12 +65,14 @@
   --esp-4: 24px;
   --esp-5: 40px;
 
-  /* Forma */
-  --raio: 12px;
-  --raio-pequeno: 8px;
-  --sombra: 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* Forma e Elevação */
+  --raio: 20px;
+  --raio-pequeno: 12px;
+  --raio-pilula: 999px;
+  --sombra: 0 8px 24px rgba(61, 43, 31, 0.08);
+  --sombra-forte: 0 14px 32px rgba(61, 43, 31, 0.14);
 
   /* Layout */
-  --largura-max: 1100px;
-  --altura-navbar: 60px;
+  --largura-max: 1200px;
+  --altura-navbar: 76px;
 }
